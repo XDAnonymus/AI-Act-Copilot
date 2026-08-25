@@ -12,7 +12,7 @@
 
 ```powershell
 git clone https://github.com/XDAnonymus/AI-Act-Copilot.git
-cd eu-ai-act-copilot
+cd AI-Act-Copilot
 
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
