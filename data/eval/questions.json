@@ -1,0 +1,149 @@
+[
+  {
+    "id": "E01",
+    "question": "What is the definition of an AI system under the EU AI Act?",
+    "expected_intent": "scope_check",
+    "expected_markers": [
+      "Article 3",
+      "AI system"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E02",
+    "question": "Who is considered a provider under the AI Act?",
+    "expected_intent": "scope_check",
+    "expected_markers": [
+      "provider",
+      "Article 3"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E03",
+    "question": "Does the AI Act apply to a company outside the EU when the system output is used in the EU?",
+    "expected_intent": "scope_check",
+    "expected_markers": [
+      "Article 2",
+      "third country"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E04",
+    "question": "Is an AI system that ranks CVs and job candidates a high-risk AI system?",
+    "expected_intent": "risk_assessment",
+    "expected_markers": [
+      "Employment",
+      "recruitment"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E05",
+    "question": "Is AI used to calculate a person's credit score considered high-risk?",
+    "expected_intent": "risk_assessment",
+    "expected_markers": [
+      "creditworthiness",
+      "credit score"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E06",
+    "question": "Are AI safety components used in critical infrastructure potentially high-risk?",
+    "expected_intent": "risk_assessment",
+    "expected_markers": [
+      "Critical infrastructure",
+      "safety components"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E07",
+    "question": "What are the main obligations of providers of high-risk AI systems?",
+    "expected_intent": "obligation_check",
+    "expected_markers": [
+      "Article 16",
+      "providers of high-risk"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E08",
+    "question": "What does the AI Act require regarding data and data governance for high-risk systems?",
+    "expected_intent": "obligation_check",
+    "expected_markers": [
+      "Article 10",
+      "data governance"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E09",
+    "question": "What transparency obligations can apply to chatbots and AI-generated content?",
+    "expected_intent": "obligation_check",
+    "expected_markers": [
+      "Article 50",
+      "transparency"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E10",
+    "question": "When does the AI Act generally apply?",
+    "expected_intent": "timeline_question",
+    "expected_markers": [
+      "Article 113",
+      "2 August 2026"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E11",
+    "question": "When do the Chapter III requirements for Annex III high-risk AI systems apply after the 2026 amendment?",
+    "expected_intent": "timeline_question",
+    "expected_markers": [
+      "2 December 2027",
+      "Article 113"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E12",
+    "question": "Milyen átláthatósági kötelezettségek vonatkozhatnak egy AI chatbotra az EU AI Act alapján?",
+    "expected_intent": "obligation_check",
+    "expected_markers": [
+      "Article 50",
+      "transparency"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E13",
+    "question": "Is social scoring a prohibited AI practice under the EU AI Act?",
+    "expected_intent": "prohibited_practice_check",
+    "expected_markers": [
+      "social scoring",
+      "Article 5"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E14",
+    "question": "Does the AI Act impose deployer obligations on a natural person using AI purely for personal non-professional activity?",
+    "expected_intent": "scope_check",
+    "expected_markers": [
+      "personal non-professional",
+      "Article 2"
+    ],
+    "as_of": "2026-08-24"
+  },
+  {
+    "id": "E15",
+    "question": "What will the weather be in Budapest tomorrow?",
+    "expected_intent": "out_of_scope",
+    "expected_markers": [],
+    "as_of": "2026-08-24"
+  }
+]

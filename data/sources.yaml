@@ -1,0 +1,30 @@
+sources:
+  - source_id: eu_ai_act_consolidated_2026_07_27
+    title: "Regulation (EU) 2024/1689 - consolidated text as of 27 July 2026"
+    authority: "EUR-Lex / European Union"
+    source_type: "regulation_consolidated"
+    path: "data/raw/ai_act_consolidated_2026-07-27_en.pdf"
+    url: "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02024R1689-20260727"
+    sha256: "1ccd38d1c78482cf2053b70110115adcc5080700acc8bd7bead8cb3579143ccf"
+    priority: 100
+    note: "Primary RAG source. Consolidated text is a documentation tool; authentic legal acts remain those published in the Official Journal."
+
+  - source_id: ec_guidelines_prohibited_practices_2025
+    title: "Commission Guidelines on prohibited artificial intelligence practices"
+    authority: "European Commission"
+    source_type: "commission_guideline"
+    path: "data/raw/ai_act_guidelines_prohibited_practices_en.pdf"
+    url: "https://ai-act-service-desk.ec.europa.eu/sites/default/files/2025-08/guidelines_on_prohibited_artificial_intelligence_practices_established_by_regulation_eu_20241689_ai_act_english_ied3r5nwo50xggpcfmwckm3nuc_112367-1.PDF"
+    sha256: "298bf8677884b333fae6d5f84aac947f45a59dff6027ca038ba08615092fd82f"
+    priority: 80
+    note: "Practical Commission interpretation and examples; non-binding."
+
+  - source_id: ec_guidelines_ai_system_definition_2025
+    title: "Commission Guidelines on the definition of an artificial intelligence system"
+    authority: "European Commission"
+    source_type: "commission_guideline"
+    path: "data/raw/ai_act_guidelines_ai_system_definition_en.pdf"
+    url: "https://ai-act-service-desk.ec.europa.eu/sites/default/files/2025-08/commission_guidelines_on_the_definition_of_an_artificial_intelligence_system_established_by_regulation_eu_20241689_ai_actenglish_nf2skcqfrtjdfggjavcodopcwz4_112455.PDF"
+    sha256: "fe39f41d061184a913c32f1f92aaaa30a096858fa168c6053e22a19eef58910e"
+    priority: 80
+    note: "Practical Commission interpretation of the AI-system definition; non-binding."

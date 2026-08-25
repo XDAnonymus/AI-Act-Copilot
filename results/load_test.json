@@ -1,0 +1,28 @@
+{
+  "requests": 50,
+  "concurrency": 1,
+  "successful": 50,
+  "errors": 0,
+  "wall_seconds": 1546.81,
+  "throughput_requests_per_second": 0.032,
+  "latency_ms": {
+    "mean": 30932.85,
+    "p50": 30464.7,
+    "p95": 48402.81,
+    "p99": 62253.96
+  },
+  "node_mean_latency_ms": {
+    "classify": 9890.67,
+    "plan": 0.0,
+    "research": 50.35,
+    "tools": 0.5,
+    "answer": 22331.4,
+    "verify": 0.02,
+    "finalize": 0.02
+  },
+  "bottleneck": "answer",
+  "optimization_suggestions": [
+    "Use a smaller or quantized local model for final answer synthesis, or reduce the maximum generated response length.",
+    "Reduce MAX_EVIDENCE / the amount of retrieved context passed to the answer node after validating retrieval quality."
+  ]
+}

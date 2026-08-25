@@ -1,0 +1,42 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.code-workspace
+
+# Runtime data
+data/qdrant/
+data/.indexed
+data/index_manifest.json
+
+# OS / logs
+.DS_Store
+Thumbs.db
+*.log
+
+# Local archives / submission packages
+*.zip
+*.7z
+*.rar
+
+# Raw sources
+/data/raw/*

@@ -1,0 +1,36 @@
+rules:
+  chapters_i_ii:
+    label: "Chapters I and II"
+    applies_from: "2025-02-02"
+    source_reference: "Article 113(a), consolidated text dated 27 July 2026"
+    note: "Subject to the specific exception for newly added Article 5 provisions applying from 2 December 2026."
+
+  gpai_chapter_v:
+    label: "Chapter V - General-purpose AI models"
+    applies_from: "2025-08-02"
+    source_reference: "Article 113(b), consolidated text dated 27 July 2026"
+    note: "Article 101 is subject to the exception stated in Article 113(b)."
+
+  general_application:
+    label: "General application of the AI Act"
+    applies_from: "2026-08-02"
+    source_reference: "Article 113, consolidated text dated 27 July 2026"
+    note: "Specific chapters and provisions have separate staged application dates."
+
+  new_prohibitions_2026_amendment:
+    label: "New Article 5 prohibition provisions introduced by the 2026 amendment"
+    applies_from: "2026-12-02"
+    source_reference: "Article 113(a), consolidated text dated 27 July 2026"
+    note: "Applies to Article 5(1) first subparagraph points (ba) and (bb), and Article 5(1a) and (1b)."
+
+  high_risk_annex_iii:
+    label: "Chapter III Sections 1-3 for Article 6(2) / Annex III high-risk systems"
+    applies_from: "2027-12-02"
+    source_reference: "Article 113(c)(i), consolidated text dated 27 July 2026"
+    note: "Article 6(5) is excepted from this staged date."
+
+  high_risk_annex_i:
+    label: "Chapter III Sections 1-3 for Article 6(1) / Annex I high-risk systems"
+    applies_from: "2028-08-02"
+    source_reference: "Article 113(c)(ii), consolidated text dated 27 July 2026"
+    note: "Article 6(5) is excepted from this staged date."

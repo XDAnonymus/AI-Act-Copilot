@@ -1,0 +1,181 @@
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+import json
+import re
+import statistics
+from time import perf_counter
+
+from app.agent_graph import build_agent_graph
+from app.config import BASE_DIR
+from app.retrieval import Retriever
+from reporting import update_readme_section
+
+
+DATASET = BASE_DIR / "data" / "eval" / "questions.json"
+RESULT_JSON = BASE_DIR / "results" / "evaluation.json"
+RESULT_MD = BASE_DIR / "results" / "evaluation.md"
+
+
+def percentile(values: list[float], p: float) -> float:
+    if not values:
+        return 0.0
+    ordered = sorted(values)
+    index = int(round((len(ordered) - 1) * p))
+    return ordered[index]
+
+
+def marker_hit(evidence: list[dict], markers: list[str]) -> bool | None:
+    if not markers:
+        return None
+    haystack = "\n".join(
+        f"{item.get('title', '')} {item.get('section', '')} {item.get('text', '')}".lower()
+        for item in evidence
+    )
+    return any(marker.lower() in haystack for marker in markers)
+
+
+def main() -> None:
+    dataset = json.loads(DATASET.read_text(encoding="utf-8"))
+    rows = []
+    latencies = []
+
+    with Retriever() as retriever:
+        graph = build_agent_graph(retriever)
+
+        for item in dataset:
+            started = perf_counter()
+            result = graph.invoke(
+                {
+                    "question": item["question"],
+                    "as_of": item.get("as_of", "2026-08-24"),
+                    "retry_count": 0,
+                    "trace": [],
+                }
+            )
+            latency_ms = (perf_counter() - started) * 1000
+            latencies.append(latency_ms)
+            answer = result.get("final_answer", "")
+            draft = result.get("draft_answer", "")
+            evidence = result.get("evidence", [])
+            citations = set(re.findall(r"\[(S\d+)\]", draft))
+            in_scope_case = item["expected_intent"] != "out_of_scope"
+
+            row = {
+                "id": item["id"],
+                "question": item["question"],
+                "expected_intent": item["expected_intent"],
+                "actual_intent": result.get("intent"),
+                "intent_correct": result.get("intent") == item["expected_intent"],
+                "retrieval_hit": marker_hit(evidence, item.get("expected_markers", [])),
+                "citation_present": bool(citations) if in_scope_case else None,
+                "verification_passed": result.get("verification", {}).get("passed") if in_scope_case else None,
+                "latency_ms": round(latency_ms, 2),
+                "answer": answer,
+            }
+            rows.append(row)
+            print(f"{item['id']}: {row['actual_intent']} - {latency_ms:.0f} ms")
+
+    total = len(rows)
+    retrieval_rows = [row for row in rows if row["retrieval_hit"] is not None]
+    citation_rows = [row for row in rows if row["citation_present"] is not None]
+    verification_rows = [row for row in rows if row["verification_passed"] is not None]
+
+    summary = {
+        "questions": total,
+        "intent_accuracy": sum(row["intent_correct"] for row in rows) / total,
+        "retrieval_hit_rate": sum(bool(row["retrieval_hit"]) for row in retrieval_rows) / len(retrieval_rows),
+        "retrieval_cases": len(retrieval_rows),
+        "citation_presence_rate": sum(bool(row["citation_present"]) for row in citation_rows) / len(citation_rows),
+        "citation_cases": len(citation_rows),
+        "verification_pass_rate": sum(bool(row["verification_passed"]) for row in verification_rows) / len(verification_rows),
+        "verification_cases": len(verification_rows),
+        "latency_ms": {
+            "mean": round(statistics.mean(latencies), 2),
+            "p50": round(percentile(latencies, 0.50), 2),
+            "p95": round(percentile(latencies, 0.95), 2),
+        },
+    }
+
+    RESULT_JSON.parent.mkdir(parents=True, exist_ok=True)
+    RESULT_JSON.write_text(json.dumps({"summary": summary, "rows": rows}, indent=2), encoding="utf-8")
+
+    failures = []
+    for row in rows:
+        issues = []
+        if not row["intent_correct"]:
+            issues.append(
+                f"intent: expected `{row['expected_intent']}`, got `{row['actual_intent']}`"
+            )
+        if row["retrieval_hit"] is False:
+            issues.append("retrieval: expected marker not found")
+        if row["citation_present"] is False:
+            issues.append("answer: no citation in generated draft")
+        if row["verification_passed"] is False:
+            issues.append("verification gate failed")
+        if issues:
+            failures.append((row, "; ".join(issues)))
+
+    failure_rows = "\n".join(
+        f"| {row['id']} | {row['question'].replace('|', '/')} | {issues} |"
+        for row, issues in failures
+    )
+    if not failure_rows:
+        failure_rows = "| - | No automated failures in this run | - |"
+
+    markdown = f"""# Functional Evaluation Results
+
+Generated by `python scripts/evaluate.py`.
+
+| Metric | Result |
+|---|---:|
+| Questions | {summary['questions']} |
+| Intent accuracy | {summary['intent_accuracy']:.1%} |
+| Retrieval hit rate | {summary['retrieval_hit_rate']:.1%} ({summary['retrieval_cases']} applicable cases) |
+| Citation presence rate | {summary['citation_presence_rate']:.1%} ({summary['citation_cases']} in-scope cases) |
+| Verification pass rate | {summary['verification_pass_rate']:.1%} ({summary['verification_cases']} in-scope cases) |
+| Mean latency | {summary['latency_ms']['mean']:.0f} ms |
+| p50 latency | {summary['latency_ms']['p50']:.0f} ms |
+| p95 latency | {summary['latency_ms']['p95']:.0f} ms |
+
+## Observed failures
+
+| ID | Question | What failed |
+|---|---|---|
+{failure_rows}
+
+## Reading the numbers
+
+- Intent accuracy checks the router against the hand-written expected intent.
+- Retrieval hit rate is calculated only for questions that define expected legal markers.
+- Citation presence is checked on the generated draft, before the final source list is appended.
+- Verification pass rate reports the deterministic evidence/citation gate for in-scope questions.
+- These checks are useful regression signals, not a substitute for manual legal review.
+"""
+    RESULT_MD.write_text(markdown, encoding="utf-8")
+    readme_summary = f"""| Metric | Result |
+|---|---:|
+| Questions | {summary['questions']} |
+| Intent accuracy | {summary['intent_accuracy']:.1%} |
+| Retrieval hit rate | {summary['retrieval_hit_rate']:.1%} |
+| Citation presence rate | {summary['citation_presence_rate']:.1%} |
+| Verification pass rate | {summary['verification_pass_rate']:.1%} |
+| p50 latency | {summary['latency_ms']['p50']:.0f} ms |
+| p95 latency | {summary['latency_ms']['p95']:.0f} ms |
+
+Full report (including failed cases): `results/evaluation.md`."""
+    update_readme_section(
+        BASE_DIR / "README.md",
+        "<!-- EVALUATION_RESULTS_START -->",
+        "<!-- EVALUATION_RESULTS_END -->",
+        readme_summary,
+    )
+    print(json.dumps(summary, indent=2))
+
+
+if __name__ == "__main__":
+    main()
